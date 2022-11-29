@@ -43,9 +43,10 @@ def bip39(mnemonic_words):
 
 if __name__ == '__main__':
     if len(approved) >= 12:
-        print('CONGRATS! Number of words >= 12')
+        print('len(list) >= 12')
     else:
-        print('ERROR: Number of words < 12')
+        print('error: len(list) < 12')
 
+    # TO DO
     #words = mobj.generate(strength=128)
     #pprint.pprint(bip39(words))
