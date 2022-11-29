@@ -10,14 +10,14 @@ enlib = 'english.log'
 mobj = mnemonic.Mnemonic("english")
 enDict = open(enlib, "r").read().split('\n')
 # load input and dict
-arr = input('Enter space-separated words: ')
+arr = input('🔎 Enter space-separated words: ')
 sus = list(map(str, arr.split(' ')))
 approved = []
 for item in sus:
     if item in enDict:
         approved.append(item)
 
-print('Valid BIP39 words: ')
+print('⌛ Valid BIP39 words: ')
 print(*approved, sep=' ')
 
 def bip39(mnemonic_words):
@@ -43,9 +43,9 @@ def bip39(mnemonic_words):
 
 if __name__ == '__main__':
     if len(approved) >= 12:
-        print('len(list) >= 12')
+        print('✅ len(list) >= 12', ' | found ', len(approved))
     else:
-        print('error: len(list) < 12')
+        print('❌ error: len(list) < 12', ' | found ', len(approved))
 
     # TO DO
     #words = mobj.generate(strength=128)
