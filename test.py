@@ -5,6 +5,7 @@ import pprint
 import binascii
 import mnemonic
 import bip32utils
+from eth_account import Account
 
 enlib = 'english.log'
 mobj = mnemonic.Mnemonic("english")
@@ -34,10 +35,10 @@ def bip39(mnemonic_words):
 
     return {
         'mnemonic_words': mnemonic_words,
-        'entropy': entropy,
-        'addr': bip32_child_key_obj.Address(),
+        'entropy': entropy.hex(),
+        'addr': Account.from_key("0x" + binascii.hexlify(bip32_child_key_obj.PrivateKey()).decode()).address,
         'publickey': binascii.hexlify(bip32_child_key_obj.PublicKey()).decode(),
-        'privatekey': bip32_child_key_obj.WalletImportFormat(),
+        'privatekey': binascii.hexlify(bip32_child_key_obj.PrivateKey()).decode(),
         'coin': 'ETH'
     }
 
@@ -48,5 +49,5 @@ if __name__ == '__main__':
         print('❌ error: len(list) < 12', ' | found ', len(approved))
 
     # TO DO
-    #words = mobj.generate(strength=128)
-    #pprint.pprint(bip39(words))
+    words = mobj.generate(strength=128)
+    pprint.pprint(bip39(words))
