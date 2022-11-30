@@ -1,8 +1,10 @@
 # fundoteth
 
-## Why Fun?
+## Eligibility for Fun?
 
-https://twitter.com/nicksdjohnson/status/1597379086153764864
+- 1000+ compute nodes
+
+- HTCondor Cluster Manager installed on headnode
 
 ## Test Fun
 
@@ -10,4 +12,8 @@ https://twitter.com/nicksdjohnson/status/1597379086153764864
 
 - Install dependencies: `pip install -r dependencies.log`
 
-- Run `python3 test.py`
+- Run `./genDag.sh`
+
+- Run `condor_submit_dag -maxidle <some value> dag.dag`
+
+- Listen for success: `./check.sh`
