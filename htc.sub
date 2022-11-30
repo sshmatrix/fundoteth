@@ -9,9 +9,4 @@ request_memory = 500
 notification = NEVER 
 accounting_group = tag
 WhenToTransferOutput = on_exit 
-on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
-job_machine_attrs = Machine
-job_machine_attrs_history_length = 5
-requirements = target.machine =!= MachineAttrMachine1 && target.machine =!= MachineAttrMachine2 && target.machine =!= MachineAttrMachine3 && targ
-et.machine =!= MachineAttrMachine4 && target.machine =!= MachineAttrMachine5
 queue
