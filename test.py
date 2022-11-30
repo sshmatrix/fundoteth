@@ -10,6 +10,10 @@ import itertools
 from operator import itemgetter
 import time
 import random
+import sys
+
+id = int(sys.argv[1])
+batch = int(sys.argv[2])
 
 def fact(n):
     res = 1
@@ -132,6 +136,11 @@ def bip39(mnemonic_words):
             'coin': 'ETH'
         }
         pprint.pprint(result)
+        with open('test.key', 'a') as file:
+            file.write(result)
+            return True
+    else:
+        return False
 
 if __name__ == '__main__':
     print('⌛ Testing ...')
@@ -143,13 +152,18 @@ if __name__ == '__main__':
         allPer = itertools.permutations(try_this)
         for each in allPer:
             i += 1
-            if i == N:
+            if (id + 1) * batch > i >= (id * batch):
+                try:
+                    success = bip39(' '.join(each))
+                    if success:
+                        break
+                    else:
+                        continue
+                except Exception as error:
+                    print(i, error)
+            elif i >= (id + 1) * batch:
                 break
-            try:
-                bip39(' '.join(each))
-            except Exception as error:
-                ''
-        break
+
     end = time.time()
     if i > 0:
         print('DONE')
