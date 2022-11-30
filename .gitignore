@@ -5,3 +5,6 @@ sub.sub
 *.dag
 .env*
 *.spec
+.DS_Store
+*/.DS_Store
+*/*/.DS_Store
