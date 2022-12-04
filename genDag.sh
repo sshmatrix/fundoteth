@@ -1,5 +1,6 @@
 #!/bin/bash
-#pyinstaller --onefile --windowed test.py
+COUNT=$1
+python3 -m PyInstaller --onefile --windowed test.py
 source .env
 HERE=/work/$USER/midjourney
 DAG=${HERE}"/dag.dag"
@@ -8,8 +9,9 @@ sed -i "s/user/$USER/g" ${HERE}"/sub.sub"
 sed -i "s/tag/$TAG/g" ${HERE}"/sub.sub"
 set -u
 rm ${HERE}/*dag.* > /dev/null 2>&1
-rm ${HERE}/*.flag > /dev/null 2>&1
-for ID in $(seq 0 5000); do
+rm ${HERE}/flags* > /dev/null 2>&1
+rm ${HERE}/logs*  > /dev/null 2>&1
+for ID in $(seq 0 $COUNT); do
   mkdir -p logs/${ID}/
   echo "JOB A${ID} ${HERE}/sub.sub"
   echo "VARS A${ID} ID=\"${ID}\""
@@ -17,4 +19,4 @@ for ID in $(seq 0 5000); do
 done > ${DAG}
 head -n 6 ${DAG}
 tail -n 6 ${DAG}
-#condor_submit_dag -maxidle 500 sub.sub
+condor_submit_dag -maxidle 500 $DAG

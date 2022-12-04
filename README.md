@@ -2,9 +2,9 @@
 
 ## Eligibility for Fun?
 
-- 1000+ compute nodes
+- `1000+` compute nodes
 
-- HTCondor Cluster Manager installed on headnode
+- `HTCondor` cluster manager installed on headnode
 
 ## Test Fun
 
