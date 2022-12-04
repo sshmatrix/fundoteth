@@ -167,11 +167,10 @@ if __name__ == '__main__':
             print('error: len != 12')
             break
 
-
     end = time.time()
     if i > 0:
         print('DONE')
-        print(((end - start)/i)*fact(12), 'seconds')
+        print((end - start), 'seconds')
         print((end - start)/i, 'seconds/trial')
     else:
         print('⚠️  Threshold too high')
