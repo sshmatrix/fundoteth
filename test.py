@@ -10,6 +10,13 @@ import itertools
 from operator import itemgetter
 import time
 import random
+from functools import reduce
+import sys
+
+# load input and dict
+enlib = 'english.log'
+mobj = mnemonic.Mnemonic("english")
+enDict = open(enlib, "r").read().split('\n')
 
 def fact(n):
     res = 1
@@ -21,91 +28,90 @@ def nPr(n, r):
 def nCr(n, r):
     return fact(n)/(fact(r)*fact(n - r))
 
-
 start = time.time()
-limit = 12.0
-lim_ = 1.0
-N = 10000
-enlib = 'english.log'
-mobj = mnemonic.Mnemonic("english")
-enDict = open(enlib, "r").read().split('\n')
-# load input and dict
+
+# variable -------------------------
+susLists = [['police', 1, 1], ## FIXED
+['pair',     1, 2],           ## !
+['double',   1, 2],           ## !
+['two',      1, 2],           ## !
+['gossip',   1, 3],           ## ! FIXED
+['drum',     2, 4],           ## ! FIXED
+['marriage', 2, 4],           ## ! FIXED
+['movie',    2, 5],           ## ! FIXED
+['engage',   2, 5],           ## ! FIXED
+['hope',     1, 6],           ## ! FIXED
+['april',    1, 7],           ## ! FIXED
+['window',   1, 9]]           ## ! FIXED
+layer_ = [0, 8]               ## ! 0% : [0, 9], [1, 9], [1, 8]
+# ----------------------------------
+
+for layer in layer_:
+    for i in enDict:
+        if i != '':
+            susLists.append([i, 1, layer])
+
 print('🔎 Generating sorted mnemonic list ...')
-susWords = [['bride', 1.00, 1],
-['couple', 1.00, 1],
-['reflect', 1.00, 1],
-['portrait', 1.00, 1],
-['soldier', 1.00, 1],
-['cover', 1.00, 1],
-['hold', 1.00, 1],
-['mirror', 1.00, 1],
-['stick', 0.75, 1],
-['drum', 0.75, 1],
-['hat', 0.75, 1],
-['wedding', 0.75, 1],
-['police', 0.75, 1],
-['history', 0.50, 1],
-['marriage', 0.50, 1],
-['hand', 0.50, 1],
-['uniform', 0.50, 1],
-['ceremony', 0.50, 1],
-['celebrate', 0.50, 1],
-['groom', 0.50, 1],
-['badge', 0.50, 1],
-['memory', 0.25, 1],
-['wife', 0.25, 1],
-['husband', 0.25, 1],
-['picture', 0.25, 1],
-['man', 0.25, 1],
-['woman', 0.25, 1],
-['finger', 0.25, 1],
-['gown', 0.25, 1],
-['head', 0.00, 1],
-['jewel', 0.00, 1],
-['eye', 0.00, 1],
-['proud', 0.00, 1],
-['pride', 0.00, 1],
-['vision', 0.00, 1],
-['love', 0.00, 1],
-['face', 0.00, 1],
-['curtain', 0.25, 2],
-['forest', 0.25, 2],
-['old', 0.50, 2],
-['glass', 0.75, 2],
-['nature', 1.00, 2],
-['window', 1.00, 2],
-['bright', 1.00, 2],
-['warm', 1.00, 2],
-['title', 1.00, 2],
-['view',1.00, 2]]
+susLists = sorted(susLists, key=itemgetter(2))
+susGroup = []
+for item in set([this[2] for this in susLists]):
+    each_ = []
+    for each in susLists:
+        if each[2] == item:
+            each_.append([each[0], each[1], each[2]])
+    susGroup.append(each_)
+all_ = []
+nCount = []
+valid = []
+for susWords in susGroup:
+    allIn = []; sum = 0
+    if susWords[0][2] in layer_:
+        nCount.append(len(susWords))
+        for i in susWords:
+            valid.append([i[0]])
+            allIn.append([i[0], 1])
+        all_.append(allIn)
+        continue
+    limit = susWords[0][1]
+    random.shuffle(susWords);
+    approved = [item for item in susWords if item[0] in enDict]
+    valid.append([this_[0] for this_ in approved])
+    onlyWords = [i[0] for i in approved]
+    toTest = len(approved)
+    nCount.append(nPr(toTest, int(len(susWords))))
+    for i in list(itertools.permutations(approved, int(limit))):
+        string = []
+        for j in i:
+            string.append(j[0])
+        allIn.append([' '.join(string), 1])
+    all_.append(allIn)
 
-random.shuffle(susWords);
-approved = [item for item in susWords if item[0] in enDict and item[1] >= lim_]
-onlyWords = [i[0] for i in approved]
 print('📜 Valid BIP39 words: ')
-print(*onlyWords, sep=' ')
+print(*[item for sublist in valid for item in sublist], sep=' ')
+print('nPr =', int(reduce(lambda x, y: x*y, nCount)))
+all = [];
 
-toTest = len(approved)
-nCr = str(int(nCr(toTest, 12)))
-# Generate ordered list of mnemonics to try
-allC = []
-for i in list(itertools.combinations(approved, 12)):
-    sum = 0; string = []; unique = []
-    for j in i:
-        sum += j[1]
-        string.append(j[0])
-        unique.append(j[2])
-    if sum >= limit and len(set(unique)) == 2 and len(set([unique.count(k) for k in set(unique)])) == 1:
-        allC.append([' '.join(string), sum])
+# manual nesting; TO DO: replace with inverse do-while matrix
+for i in all_[0]:
+    for j in all_[1]:
+        for k in all_[2]:
+            for l in all_[3]:
+                for m in all_[4]:
+                    for n in all_[5]:
+                        for o in all_[6]:
+                            for p in all_[7]:
+                                for q in all_[8]:
+                                    for r in all_[9]:
+                                        all.append([' '.join([i[0], j[0], k[0], l[0], m[0], n[0], o[0], p[0], q[0], r[0]]), (i[1] + j[1] + k[1] + l[1] + m[1] + n[1] + o[1] + p[1] + q[1] + r[1])])
 
-allC = sorted(allC, key=itemgetter(1))
-toTrial = str(len(allC))
+all = sorted(all, key=itemgetter(1))
+toTrial = str(len(all))
 if 18 >= toTest >= 12:
-    print('✅ 18>= len(list) >= 12' + ', Found: ' + str(toTest) + ', nCr = ' + toTrial)
+    print('✅ 18>= len(list) >= 12' + ', Found: ' + str(toTest) + ', nPr = ' + toTrial)
 elif len(approved) >= 18:
-    print('❌ len(list) >= 18' + ', Found: ' + str(toTest) + ', nCr = ' + toTrial)
+    print('❌ len(list) >= 18' + ', Found: ' + str(toTest) + ', nPr = ' + toTrial)
 else:
-    print('⚠️  Warning: len(list) < 12' + ', Found: ' + str(toTest) + ', nCr = ' + toTrial)
+    print('⚠️  Warning: len(list) < 12' + ', Found: ' + str(toTest) + ', nPr = ' + toTrial)
 
 def bip39(mnemonic_words):
     seed = mobj.to_seed(mnemonic_words)
@@ -114,13 +120,12 @@ def bip39(mnemonic_words):
     bip32_child_key_obj = bip32_root_key_obj.ChildKey(
         44 + bip32utils.BIP32_HARDEN
     ).ChildKey(
-        0 + bip32utils.BIP32_HARDEN
+        60 + bip32utils.BIP32_HARDEN
     ).ChildKey(
         0 + bip32utils.BIP32_HARDEN
     ).ChildKey(0).ChildKey(0)
 
     addr = Account.from_key("0x" + binascii.hexlify(bip32_child_key_obj.PrivateKey()).decode()).address
-
     if (addr == "0xC399bd88A3471bfD277966Fef8e5110857e827Fc"):
         print('🔥🔥🔥')
         result = {
@@ -132,28 +137,35 @@ def bip39(mnemonic_words):
             'coin': 'ETH'
         }
         pprint.pprint(result)
+        with open('test.key', 'a') as file:
+            file.write(str(result))
+            return True
+    else:
+        return False
 
 if __name__ == '__main__':
     print('⌛ Testing ...')
-    for one in allC:
-        print(one[0])
     i = 0
-    for one in allC:
-        try_this = one[0].split(' ')
-        allPer = itertools.permutations(try_this)
-        for each in allPer:
-            i += 1
-            if i == N:
-                break
+    for each in all:
+        i += 1
+        if len(each[0].split(' ')) == 12:
             try:
-                bip39(' '.join(each))
+                success = bip39(each[0])
+                if success:
+                    break
+                else:
+                    continue
             except Exception as error:
+                #print(i, error)
                 ''
-        break
+        else:
+            print('error: len != 12')
+            break
+
     end = time.time()
     if i > 0:
         print('DONE')
-        print(((end - start)/i)*fact(12), 'seconds')
+        print((end - start), 'seconds')
         print((end - start)/i, 'seconds/trial')
     else:
         print('⚠️  Threshold too high')
